@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 7%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+
+    --primary: 207 100% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 7%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 0 0% 27%;
+
+    --accent: 148 81% 44%;
+    --accent-foreground: 0 0% 100%;
+
+    --blue-accent: 207 100% 52%;
+    --green-accent: 148 81% 44%;
+    
+    --blue-soft: 207 100% 97%;
+    --green-soft: 148 100% 97%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 207 100% 52%;
+
+    --radius: 0.875rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(207 100% 52%), hsl(148 81% 44%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 98%), hsl(207 100% 97%));
+    --gradient-hero: linear-gradient(135deg, hsl(207 100% 97% / 0.5), hsl(148 100% 97% / 0.3));
+    
+    --shadow-soft: 0 4px 16px -4px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 24px -6px rgba(0, 0, 0, 0.12);
+    --shadow-premium: 0 10px 40px -10px rgba(14, 139, 255, 0.15);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 210 20% 18%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 210 20% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 145 63% 49%;
+    --accent-foreground: 0 0% 100%;
+    --border: 210 20% 18%;
+    --input: 210 20% 18%;
+    --ring: 145 63% 49%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* International Phone Input Styles */
+.intl-phone-wrapper .react-international-phone-input-container {
+  @apply flex w-full;
+}
+
+.intl-phone-wrapper .react-international-phone-input-container .intl-phone-input-standalone {
+  @apply flex-1 h-10 rounded-r-md border border-input bg-background px-3 py-2 text-sm ring-offset-background;
+  @apply placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  font-family: inherit;
+}
+
+.intl-phone-error .intl-phone-input-standalone,
+.intl-phone-error .intl-phone-country-btn-custom {
+  @apply border-destructive;
+}
+
+/* Hide the library's built-in country selector button */
+.intl-phone-hidden-btn {
+  @apply !hidden;
+}
+
+/* Remove library container left border-radius when our custom button is used */
+.intl-phone-wrapper .react-international-phone-input-container {
+  @apply flex-1;
+}

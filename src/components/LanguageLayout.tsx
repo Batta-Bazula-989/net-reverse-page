@@ -1,4 +1,4 @@
-import { useParams, Navigate, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { LanguageProvider, type Language } from '@/contexts/LanguageContext';
 import { AnalyticsTracker } from '@/components/AnalyticsTracker';
 import { ScrollToTop } from '@/components/ScrollToTop';
@@ -7,26 +7,17 @@ import Insight from '@/pages/Insight';
 import Privacy from '@/pages/Privacy';
 import NotFound from '@/pages/NotFound';
 
-/** Map URL prefix to internal Language type */
-function urlToLang(urlLang: string | undefined): Language | null {
-  switch (urlLang) {
-    case 'en': return 'en';
-    case 'ru': return 'ru';
-    case 'uk': return 'ua';
-    default: return null;
-  }
+interface Props {
+  urlLang: 'en' | 'ru' | 'uk';
 }
 
-export default function LanguageLayout() {
-  const { lang } = useParams<{ lang: string }>();
-  const language = urlToLang(lang);
+function urlToLang(urlLang: 'en' | 'ru' | 'uk'): Language {
+  return urlLang === 'uk' ? 'ua' : urlLang;
+}
 
-  if (!language) {
-    return <Navigate to="/en" replace />;
-  }
-
+export default function LanguageLayout({ urlLang }: Props) {
   return (
-    <LanguageProvider urlLang={language}>
+    <LanguageProvider urlLang={urlToLang(urlLang)}>
       <AnalyticsTracker />
       <ScrollToTop />
       <Routes>

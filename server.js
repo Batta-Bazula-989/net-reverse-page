@@ -131,9 +131,22 @@ app.post('/api/submit', async (req, res) => {
   }
 });
 
-// SPA fallback — serve index.html for all non-API routes in production
+// Serve sitemap.xml with the correct MIME type.
+// express.static handles this when dist/sitemap.xml exists, but an explicit
+// route here guarantees the Content-Type even if the static layer is bypassed
+// and prevents the SPA catch-all below from serving index.html for it.
 if (isProd) {
-  app.get('*', (_req, res) => {
+  app.get('/sitemap.xml', (_req, res) => {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'dist', 'sitemap.xml'));
+  });
+}
+
+// SPA fallback — serve index.html for all non-API routes in production.
+// Requests with a file extension (e.g. .xml, .txt, .png) are NOT matched here;
+// if the static middleware didn't serve them, they should 404, not return HTML.
+if (isProd) {
+  app.get(/^(?!.*\.\w+$).*$/, (_req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
 }

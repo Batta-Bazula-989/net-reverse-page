@@ -52,6 +52,7 @@ async function sendTelegram(text) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!res.ok) {

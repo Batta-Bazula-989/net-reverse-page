@@ -114,34 +114,21 @@ app.post('/api/submit', async (req, res) => {
     </table>
   `;
 
-  const notified = { telegram: false, email: false };
+  // Respond immediately — notifications fire in the background
+  res.json({ success: true });
 
-  // Send Telegram notification
-  try {
-    await sendTelegram(tgText);
-    notified.telegram = true;
-  } catch (err) {
-    console.error('[Telegram]', err.message);
-  }
+  sendTelegram(tgText).catch(err => console.error('[Telegram]', err.message));
 
-  // Send email notification
   if (mailer) {
-    try {
-      await mailer.sendMail({
-        from: '"Net Reverse" <netreverse.ai@gmail.com>',
-        to: 'netreverse.ai@gmail.com',
-        subject: emailSubject,
-        html: emailHtml,
-      });
-      notified.email = true;
-    } catch (err) {
-      console.error('[Email]', err.message);
-    }
+    mailer.sendMail({
+      from: '"Net Reverse" <netreverse.ai@gmail.com>',
+      to: 'netreverse.ai@gmail.com',
+      subject: emailSubject,
+      html: emailHtml,
+    }).catch(err => console.error('[Email]', err.message));
   } else {
     console.warn('[Email] EMAIL_PASS not set — skipping');
   }
-
-  res.json({ success: true, notified });
 });
 
 // SPA fallback — serve index.html for all non-API routes in production

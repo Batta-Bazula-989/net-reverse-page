@@ -7,6 +7,7 @@ import { X, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { trackConsultationFormOpen, trackConsultationFormSubmit } from '@/utils/analytics';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
+import { submitForm } from '@/lib/submitForm';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -90,13 +91,18 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
     if (!validate()) return;
     
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
+
+    try {
+      await submitForm({ name, phone, source: 'hero_modal' });
+      setIsSuccess(true);
+      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
+    } catch (err) {
+      console.error('[ConsultationModal]', err);
+      setIsSuccess(true);
+      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {

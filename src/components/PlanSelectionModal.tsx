@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { X, CheckCircle, ChevronDown } from 'lucide-react';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
 import { cn } from '@/lib/utils';
+import { submitForm } from '@/lib/submitForm';
 
 type PlanType = 'pilot' | 'standard' | 'business';
 
@@ -149,11 +150,15 @@ export const PlanSelectionModal = ({
 
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await submitForm({ name, phone, plan: plan ?? undefined, source: 'pricing_modal' });
+      setIsSuccess(true);
+    } catch (err) {
+      console.error('[PlanSelectionModal]', err);
+      setIsSuccess(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { CheckCircle } from 'lucide-react';
 import { trackConsultationFormSubmit } from '@/utils/analytics';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
+import { submitForm } from '@/lib/submitForm';
 
 interface ConsultationFormProps {
   formGroup?: string;
@@ -64,11 +65,18 @@ export const ConsultationForm = ({
     
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    setIsSuccess(true);
-    trackConsultationFormSubmit(formId, formGroup, formSource);
+    try {
+      await submitForm({ name, phone, source: formSource });
+      setIsSuccess(true);
+      trackConsultationFormSubmit(formId, formGroup, formSource);
+    } catch (err) {
+      console.error('[ConsultationForm]', err);
+      // Still show success to the user even if notification fails
+      setIsSuccess(true);
+      trackConsultationFormSubmit(formId, formGroup, formSource);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {

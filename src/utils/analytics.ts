@@ -64,25 +64,37 @@ export const trackPageView = (path: string, title?: string) => {
 // Consultation form events
 export const trackConsultationFormOpen = (
   source: string,
-  formGroup: string = 'home',
-  formId: string = 'home_consultation_form'
+  formGroup: string,
+  formId: string,
+  language: string,
+  pagePath: string,
+  selectedPlan?: string
 ) => {
   trackEvent('consultation_form_open', {
     form_source: source,
     form_group: formGroup,
     form_id: formId,
+    language,
+    page_path: pagePath,
+    ...(selectedPlan !== undefined && { selected_plan: selectedPlan }),
   });
 };
 
 export const trackConsultationFormSubmit = (
   formId: string,
-  formGroup: string = 'home',
-  formSource: string = 'home_cta'
+  formGroup: string,
+  formSource: string,
+  language: string,
+  pagePath: string,
+  selectedPlan?: string
 ) => {
   trackEvent('consultation_form_submit_success', {
     form_id: formId,
     form_group: formGroup,
     form_source: formSource,
+    language,
+    page_path: pagePath,
+    ...(selectedPlan !== undefined && { selected_plan: selectedPlan }),
   });
 };
 

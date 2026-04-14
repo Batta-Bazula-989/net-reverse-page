@@ -19,7 +19,7 @@ export const ConsultationForm = ({
   formId = 'home_consultation_form', 
   formSource = 'home_cta' 
 }: ConsultationFormProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,9 +68,19 @@ export const ConsultationForm = ({
     setSubmitError(false);
 
     try {
-      await submitForm({ name, phone, source: formSource });
+      const lang = language === 'ua' ? 'uk' : language;
+      const pagePath = window.location.pathname;
+      await submitForm({
+        name,
+        phone,
+        form_group: formGroup,
+        form_id: formId,
+        form_source: formSource,
+        language: lang,
+        page_path: pagePath,
+      });
       setIsSuccess(true);
-      trackConsultationFormSubmit(formId, formGroup, formSource);
+      trackConsultationFormSubmit(formId, formGroup, formSource, lang, pagePath);
     } catch (err) {
       console.error('[ConsultationForm]', err);
       setSubmitError(true);

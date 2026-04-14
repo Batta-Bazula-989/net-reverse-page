@@ -15,7 +15,7 @@ interface ConsultationModalProps {
 }
 
 export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,7 +28,8 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
   useEffect(() => {
     if (isOpen) {
       setShouldRender(true);
-      trackConsultationFormOpen('hero_modal', 'home', 'home_consultation_form');
+      const lang = language === 'ua' ? 'uk' : language;
+      trackConsultationFormOpen('hero_modal', 'home', 'home_consultation_form', lang, window.location.pathname);
       // Small delay to trigger animation
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -96,9 +97,19 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
     setSubmitError(false);
 
     try {
-      await submitForm({ name, phone, source: 'hero_modal' });
+      const lang = language === 'ua' ? 'uk' : language;
+      const pagePath = window.location.pathname;
+      await submitForm({
+        name,
+        phone,
+        form_group: 'home',
+        form_id: 'home_consultation_form',
+        form_source: 'hero_modal',
+        language: lang,
+        page_path: pagePath,
+      });
       setIsSuccess(true);
-      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
+      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal', lang, pagePath);
     } catch (err) {
       console.error('[ConsultationModal]', err);
       setSubmitError(true);

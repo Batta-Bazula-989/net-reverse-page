@@ -1,8 +1,12 @@
 interface SubmitData {
   name: string;
   phone: string;
-  plan?: string;
-  source: string;
+  form_group: string;
+  form_id: string;
+  form_source: string;
+  language: string;
+  page_path: string;
+  selected_plan?: string;
 }
 
 interface SubmitResponse {

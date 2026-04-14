@@ -3,7 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, CheckCircle } from 'lucide-react';
+import { X, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { trackConsultationFormOpen, trackConsultationFormSubmit } from '@/utils/analytics';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
@@ -20,6 +20,7 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -42,6 +43,7 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
       const timer = setTimeout(() => {
         setShouldRender(false);
         setIsSuccess(false);
+        setSubmitError(false);
         setName('');
         setPhone('');
         setErrors({});
@@ -91,6 +93,7 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
     if (!validate()) return;
     
     setIsSubmitting(true);
+    setSubmitError(false);
 
     try {
       await submitForm({ name, phone, source: 'hero_modal' });
@@ -98,8 +101,7 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
       trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
     } catch (err) {
       console.error('[ConsultationModal]', err);
-      setIsSuccess(true);
-      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal');
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -196,6 +198,12 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
                 )}
               </div>
 
+              {submitError && (
+                <div className="flex items-center gap-2 text-sm text-destructive">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{t('modal.error.submit') || 'Something went wrong. Please try again.'}</span>
+                </div>
+              )}
               <Button 
                 type="submit" 
                 className="w-full" 

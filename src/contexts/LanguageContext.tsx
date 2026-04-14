@@ -474,6 +474,7 @@ const translations: Record<Language, Record<string, string>> = {
     'modal.close': 'Close',
     'modal.error.name': 'Please enter your name',
     'modal.error.phone': 'Please enter a valid phone number',
+    'modal.error.submit': 'Something went wrong. Please try again.',
   },
   ru: {
     // Navigation
@@ -930,6 +931,7 @@ const translations: Record<Language, Record<string, string>> = {
     'modal.close': 'Закрыть',
     'modal.error.name': 'Пожалуйста, введите ваше имя',
     'modal.error.phone': 'Пожалуйста, введите корректный номер телефона',
+    'modal.error.submit': 'Что-то пошло не так. Попробуйте ещё раз.',
   },
   ua: {
     // Navigation
@@ -1386,6 +1388,7 @@ const translations: Record<Language, Record<string, string>> = {
     'modal.close': 'Закрити',
     'modal.error.name': 'Будь ласка, введіть ваше ім\'я',
     'modal.error.phone': 'Будь ласка, введіть коректний номер телефону',
+    'modal.error.submit': 'Щось пішло не так. Спробуйте ще раз.',
   },
 };
 

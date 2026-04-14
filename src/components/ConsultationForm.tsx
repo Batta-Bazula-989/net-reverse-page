@@ -3,7 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle } from 'lucide-react';
 import { trackConsultationFormSubmit } from '@/utils/analytics';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
 import { submitForm } from '@/lib/submitForm';
@@ -24,6 +24,7 @@ export const ConsultationForm = ({
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
   const handlePhoneChange = (newPhone: string) => {
@@ -64,6 +65,7 @@ export const ConsultationForm = ({
     }
     
     setIsSubmitting(true);
+    setSubmitError(false);
 
     try {
       await submitForm({ name, phone, source: formSource });
@@ -71,9 +73,7 @@ export const ConsultationForm = ({
       trackConsultationFormSubmit(formId, formGroup, formSource);
     } catch (err) {
       console.error('[ConsultationForm]', err);
-      // Still show success to the user even if notification fails
-      setIsSuccess(true);
-      trackConsultationFormSubmit(formId, formGroup, formSource);
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -117,6 +117,12 @@ export const ConsultationForm = ({
           <p className="text-sm text-destructive">{errors.phone}</p>
         )}
       </div>
+      {submitError && (
+        <div className="flex items-center gap-2 text-sm text-destructive">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{t('modal.error.submit') || 'Something went wrong. Please try again.'}</span>
+        </div>
+      )}
       <Button 
         type="submit" 
         className="w-full" 

@@ -3,7 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, CheckCircle, ChevronDown } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
 import { cn } from '@/lib/utils';
 import { submitForm } from '@/lib/submitForm';
@@ -29,6 +29,7 @@ export const PlanSelectionModal = ({
   const [plan, setPlan] = useState<PlanType | null>(selectedPlan);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; phone?: string; plan?: string }>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -55,6 +56,7 @@ export const PlanSelectionModal = ({
       const timer = setTimeout(() => {
         setShouldRender(false);
         setIsSuccess(false);
+        setSubmitError(false);
         setName('');
         setPhone('');
         setPlan(null);
@@ -149,13 +151,14 @@ export const PlanSelectionModal = ({
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setSubmitError(false);
 
     try {
       await submitForm({ name, phone, plan: plan ?? undefined, source: 'pricing_modal' });
       setIsSuccess(true);
     } catch (err) {
       console.error('[PlanSelectionModal]', err);
-      setIsSuccess(true);
+      setSubmitError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -298,6 +301,12 @@ export const PlanSelectionModal = ({
                 {errors.plan && <p className="text-sm text-destructive">{errors.plan}</p>}
               </div>
 
+              {submitError && (
+                <div className="flex items-center gap-2 text-sm text-destructive">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{t('modal.error.submit') || 'Something went wrong. Please try again.'}</span>
+                </div>
+              )}
               <Button type="submit" className="w-full py-6" disabled={isSubmitting}>
                 {isSubmitting ? '...' : t('planModal.submit')}
               </Button>

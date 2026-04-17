@@ -62,21 +62,27 @@ async function sendTelegram(text) {
 
 // POST /api/submit — receives form data and dispatches notifications
 app.post('/api/submit', async (req, res) => {
-  const { name, phone, plan, source } = req.body ?? {};
+  const { name, phone, form_source, form_id, language, page_path, selected_plan } = req.body ?? {};
 
   if (!name?.trim() || !phone?.trim()) {
     return res.status(400).json({ success: false, error: 'Missing required fields' });
   }
 
-  const safeName   = esc(name);
-  const safePhone  = esc(phone);
-  const safePlan   = plan   ? esc(plan)   : null;
-  const safeSource = esc(source || 'Unknown');
+  const safeName    = esc(name);
+  const safePhone   = esc(phone);
+  const safeSource  = esc(form_source  || 'unknown');
+  const safeFormId  = esc(form_id      || 'unknown');
+  const safeLang    = esc(language     || 'unknown');
+  const safePage    = esc(page_path    || 'unknown');
+  const safePlan    = selected_plan ? esc(selected_plan) : null;
 
   // ── Telegram message ────────────────────────────────────────────────────────
   const tgText = [
     '📩 <b>New Lead — Net Reverse</b>',
     `📌 Source: <i>${safeSource}</i>`,
+    `🆔 Form ID: ${safeFormId}`,
+    `🌐 Language: ${safeLang}`,
+    `📍 Page: ${safePage}`,
     `👤 Name: ${safeName}`,
     `📞 Phone: ${safePhone}`,
     safePlan ? `📦 Plan: ${safePlan}` : null,
@@ -99,15 +105,27 @@ app.post('/api/submit', async (req, res) => {
         <td style="padding:10px 14px;border:1px solid #ddd;">${safeSource}</td>
       </tr>
       <tr>
+        <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Form ID</td>
+        <td style="padding:10px 14px;border:1px solid #ddd;">${safeFormId}</td>
+      </tr>
+      <tr style="background:#f5f5f5;">
+        <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Language</td>
+        <td style="padding:10px 14px;border:1px solid #ddd;">${safeLang}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Page</td>
+        <td style="padding:10px 14px;border:1px solid #ddd;">${safePage}</td>
+      </tr>
+      <tr style="background:#f5f5f5;">
         <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Name</td>
         <td style="padding:10px 14px;border:1px solid #ddd;">${safeName}</td>
       </tr>
-      <tr style="background:#f5f5f5;">
+      <tr>
         <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Phone</td>
         <td style="padding:10px 14px;border:1px solid #ddd;">${safePhone}</td>
       </tr>
       ${safePlan ? `
-      <tr>
+      <tr style="background:#f5f5f5;">
         <td style="padding:10px 14px;font-weight:600;border:1px solid #ddd;">Plan</td>
         <td style="padding:10px 14px;border:1px solid #ddd;">${safePlan}</td>
       </tr>` : ''}

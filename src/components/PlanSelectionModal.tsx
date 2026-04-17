@@ -7,6 +7,7 @@ import { X, CheckCircle, AlertCircle, ChevronDown } from 'lucide-react';
 import { InternationalPhoneInput } from '@/components/InternationalPhoneInput';
 import { cn } from '@/lib/utils';
 import { submitForm } from '@/lib/submitForm';
+import { trackConsultationFormOpen, trackConsultationFormSubmit } from '@/utils/analytics';
 
 type PlanType = 'pilot' | 'standard' | 'business';
 
@@ -23,7 +24,7 @@ export const PlanSelectionModal = ({
   selectedPlan,
   isYearly,
 }: PlanSelectionModalProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [plan, setPlan] = useState<PlanType | null>(selectedPlan);
@@ -51,6 +52,12 @@ export const PlanSelectionModal = ({
         });
       });
       document.body.style.overflow = 'hidden';
+      const lang = language === 'ua' ? 'uk' : language;
+      trackConsultationFormOpen(
+        'pricing_modal', 'insight', 'insight_pricing_form',
+        lang, window.location.pathname,
+        selectedPlan ?? undefined
+      );
     } else {
       setIsAnimating(false);
       const timer = setTimeout(() => {
@@ -154,8 +161,23 @@ export const PlanSelectionModal = ({
     setSubmitError(false);
 
     try {
-      await submitForm({ name, phone, plan: plan ?? undefined, source: 'pricing_modal' });
+      const lang = language === 'ua' ? 'uk' : language;
+      const pagePath = window.location.pathname;
+      await submitForm({
+        name,
+        phone,
+        form_group: 'insight',
+        form_id: 'insight_pricing_form',
+        form_source: 'pricing_modal',
+        language: lang,
+        page_path: pagePath,
+        selected_plan: plan ?? undefined,
+      });
       setIsSuccess(true);
+      trackConsultationFormSubmit(
+        'insight_pricing_form', 'insight', 'pricing_modal',
+        lang, pagePath, plan ?? undefined
+      );
     } catch (err) {
       console.error('[PlanSelectionModal]', err);
       setSubmitError(true);

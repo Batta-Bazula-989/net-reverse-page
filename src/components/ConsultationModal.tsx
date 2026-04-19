@@ -29,7 +29,7 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
     if (isOpen) {
       setShouldRender(true);
       const lang = language === 'ua' ? 'uk' : language;
-      trackConsultationFormOpen('hero_modal', 'home', 'home_consultation_form', lang, window.location.pathname);
+      trackConsultationFormOpen('hero_modal', 'home', 'home_hero_form', lang, window.location.pathname);
       // Small delay to trigger animation
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -103,13 +103,13 @@ export const ConsultationModal = ({ isOpen, onClose }: ConsultationModalProps) =
         name,
         phone,
         form_group: 'home',
-        form_id: 'home_consultation_form',
+        form_id: 'home_hero_form',
         form_source: 'hero_modal',
         language: lang,
         page_path: pagePath,
       });
       setIsSuccess(true);
-      trackConsultationFormSubmit('home_consultation_form', 'home', 'hero_modal', lang, pagePath);
+      trackConsultationFormSubmit('home_hero_form', 'home', 'hero_modal', lang, pagePath);
     } catch (err) {
       console.error('[ConsultationModal]', err);
       setSubmitError(true);

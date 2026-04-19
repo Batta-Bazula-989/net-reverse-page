@@ -53,8 +53,10 @@ export const PlanSelectionModal = ({
       });
       document.body.style.overflow = 'hidden';
       const lang = language === 'ua' ? 'uk' : language;
+      const openSource = selectedPlan ? `pricing_${selectedPlan}` : 'pricing_modal';
+      const openFormId = selectedPlan ? `pricing_${selectedPlan}_form` : 'pricing_form';
       trackConsultationFormOpen(
-        'pricing_modal', 'insight', 'insight_pricing_form',
+        openSource, 'pricing', openFormId,
         lang, window.location.pathname,
         selectedPlan ?? undefined
       );
@@ -163,19 +165,21 @@ export const PlanSelectionModal = ({
     try {
       const lang = language === 'ua' ? 'uk' : language;
       const pagePath = window.location.pathname;
+      const formSource = `pricing_${plan}`;
+      const formId = `pricing_${plan}_form`;
       await submitForm({
         name,
         phone,
-        form_group: 'insight',
-        form_id: 'insight_pricing_form',
-        form_source: 'pricing_modal',
+        form_group: 'pricing',
+        form_id: formId,
+        form_source: formSource,
         language: lang,
         page_path: pagePath,
         selected_plan: plan ?? undefined,
       });
       setIsSuccess(true);
       trackConsultationFormSubmit(
-        'insight_pricing_form', 'insight', 'pricing_modal',
+        formId, 'pricing', formSource,
         lang, pagePath, plan ?? undefined
       );
     } catch (err) {

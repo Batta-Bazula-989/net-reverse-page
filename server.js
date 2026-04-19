@@ -62,7 +62,7 @@ async function sendTelegram(text) {
 
 // POST /api/submit — receives form data and dispatches notifications
 app.post('/api/submit', async (req, res) => {
-  const { name, phone, form_source, form_id, language, page_path, selected_plan } = req.body ?? {};
+  const { name, phone, form_source, form_group, form_id, language, page_path, selected_plan } = req.body ?? {};
 
   if (!name?.trim() || !phone?.trim()) {
     return res.status(400).json({ success: false, error: 'Missing required fields' });
@@ -71,6 +71,7 @@ app.post('/api/submit', async (req, res) => {
   const safeName    = esc(name);
   const safePhone   = esc(phone);
   const safeSource  = esc(form_source  || 'unknown');
+  const safeGroup   = esc(form_group   || 'unknown');
   const safeFormId  = esc(form_id      || 'unknown');
   const safeLang    = esc(language     || 'unknown');
   const safePage    = esc(page_path    || 'unknown');
@@ -80,6 +81,7 @@ app.post('/api/submit', async (req, res) => {
   const tgText = [
     '📩 <b>New Lead — Net Reverse</b>',
     `📌 Source: <i>${safeSource}</i>`,
+    `📁 Group: ${safeGroup}`,
     `🆔 Form ID: ${safeFormId}`,
     `🌐 Language: ${safeLang}`,
     `📍 Page: ${safePage}`,

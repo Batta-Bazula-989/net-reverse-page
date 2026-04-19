@@ -226,7 +226,7 @@ export default function Insight() {
               <div className="max-w-3xl mx-auto text-center space-y-8">
                 <h2 className="text-3xl lg:text-4xl font-bold">{t('product.cta.title')}</h2>
                 <p className="text-lg text-muted-foreground">{t('product.cta.subtitle')}</p>
-                <ConsultationForm formGroup="insight" formId="insight_product_form" formSource="insight_cta" />
+                <ConsultationForm formGroup="insight" formId="insight_bottom_form" formSource="insight_cta" />
               </div>
             </div>
           </section>

@@ -16,7 +16,7 @@ interface ConsultationFormProps {
 
 export const ConsultationForm = ({ 
   formGroup = 'home', 
-  formId = 'home_consultation_form', 
+  formId = 'home_bottom_form',
   formSource = 'home_cta' 
 }: ConsultationFormProps) => {
   const { t, language } = useLanguage();

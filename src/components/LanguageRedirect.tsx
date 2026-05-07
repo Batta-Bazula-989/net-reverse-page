@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import type { Language } from '@/contexts/LanguageContext';
 
 /** Map internal language to URL prefix */
@@ -19,5 +20,13 @@ function detectLanguage(): Language {
 
 export default function LanguageRedirect() {
   const lang = detectLanguage();
-  return <Navigate to={`/${langToUrl(lang)}`} replace />;
+  return (
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://www.netreverse.com/en" />
+      </Helmet>
+      <Navigate to={`/${langToUrl(lang)}`} replace />
+    </>
+  );
 }
